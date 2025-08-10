@@ -1,0 +1,20 @@
+model Message {
+  id        String        @id @default(uuid())
+  ticketId  String?        @map("ticket_id")
+  senderType MessageSender
+  senderId   String?        @map("sender_id")
+  sender     User?          @relation(fields: [senderId], references: [id])
+  content   String        @db.Text
+  chatUuid  String?       @map("chat_uuid")
+  createdAt DateTime      @default(now()) @map("created_at")
+
+  ticket    Ticket?        @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@map("messages")
+}
+
+enum MessageSender {
+  CLIENT
+  CHATBOT
+  CONSULTANT
+} 

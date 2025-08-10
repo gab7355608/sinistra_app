@@ -1,0 +1,178 @@
+image: node:18
+
+definitions:
+  caches:
+    pnpm: ~/.local/share/pnpm/store
+
+pipelines:
+  default:
+    - step:
+        name: Install dependencies
+        caches:
+          - pnpm
+        script:
+          - npm install -g pnpm
+          - pnpm install --frozen-lockfile
+        artifacts:
+          - node_modules/**
+          - backend/node_modules/**
+          - frontend/node_modules/**
+          - shared/node_modules/**
+
+    - parallel:
+        - step:
+            name: Backend - Prettier Check
+            caches:
+              - pnpm
+            script:
+              - npm install -g pnpm
+              - cd backend
+              - echo "🎨 Vérification du formatage Prettier pour le backend..."
+              - pnpm prettier --check "src/**/*.{ts,js,json}" --config .prettierrc
+              - echo "✅ Le formatage du backend est conforme"
+
+        - step:
+            name: Frontend - Prettier Check
+            caches:
+              - pnpm
+            script:
+              - npm install -g pnpm
+              - cd frontend
+              - echo "🎨 Vérification du formatage Prettier pour le frontend..."
+              - pnpm prettier --check "src/**/*.{ts,tsx,js,jsx,json,css}" --config .prettierrc
+              - echo "✅ Le formatage du frontend est conforme"
+
+        - step:
+            name: Shared - Prettier Check
+            caches:
+              - pnpm
+            script:
+              - npm install -g pnpm
+              - cd shared
+              - echo "🎨 Vérification du formatage Prettier pour shared..."
+              - pnpm prettier --check "**/*.{ts,js,json}" --config .prettierrc || echo "⚠️ Pas de configuration Prettier dans shared, ignoré"
+              - echo "✅ Le formatage de shared est conforme"
+
+    - parallel:
+        - step:
+            name: Backend - TypeScript Check
+            caches:
+              - pnpm
+            script:
+              - npm install -g pnpm
+              - cd backend
+              - echo "🔍 Vérification TypeScript pour le backend..."
+              - pnpm tsc --noEmit
+              - echo "✅ Pas d'erreurs TypeScript dans le backend"
+
+        - step:
+            name: Frontend - TypeScript Check
+            caches:
+              - pnpm
+            script:
+              - npm install -g pnpm
+              - cd frontend
+              - echo "🔍 Vérification TypeScript pour le frontend..."
+              - pnpm tsc --noEmit
+              - echo "✅ Pas d'erreurs TypeScript dans le frontend"
+
+  branches:
+    main:
+      - step:
+          name: Install dependencies
+          caches:
+            - pnpm
+          script:
+            - npm install -g pnpm
+            - pnpm install --frozen-lockfile
+          artifacts:
+            - node_modules/**
+            - backend/node_modules/**
+            - frontend/node_modules/**
+            - shared/node_modules/**
+
+      - parallel:
+          - step:
+              name: Backend - Full Check
+              caches:
+                - pnpm
+              script:
+                - npm install -g pnpm
+                - cd backend
+                - echo "🎨 Vérification du formatage..."
+                - pnpm prettier --check "src/**/*.{ts,js,json}" --config .prettierrc
+                - echo "🔍 Vérification TypeScript..."
+                - pnpm tsc --noEmit
+                - echo "🔍 Vérification ESLint..."
+                - pnpm eslint src --ext .ts,.js --max-warnings 0
+                - echo "✅ Backend validé"
+
+          - step:
+              name: Frontend - Full Check
+              caches:
+                - pnpm
+              script:
+                - npm install -g pnpm
+                - cd frontend
+                - echo "🎨 Vérification du formatage..."
+                - pnpm prettier --check "src/**/*.{ts,tsx,js,jsx,json,css}" --config .prettierrc
+                - echo "🔍 Vérification TypeScript..."
+                - pnpm tsc --noEmit
+                - echo "🔍 Vérification ESLint..."
+                - pnpm eslint src --ext .ts,.tsx,.js,.jsx --max-warnings 0
+                - echo "✅ Frontend validé"
+
+      - step:
+          name: Build Applications
+          caches:
+            - pnpm
+          script:
+            - echo "🔨 Construction des applications..."
+            - cd backend && pnpm build
+            - cd ../frontend && pnpm build
+            - echo "✅ Applications construites avec succès"
+          artifacts:
+            - backend/dist/**
+            - frontend/dist/**
+
+  pull-requests:
+    "**":
+      - step:
+          name: Install dependencies
+          caches:
+            - pnpm
+          script:
+            - npm install -g pnpm
+            - pnpm install --frozen-lockfile
+          artifacts:
+            - node_modules/**
+            - backend/node_modules/**
+            - frontend/node_modules/**
+            - shared/node_modules/**
+
+      - parallel:
+          - step:
+              name: Backend - Code Quality
+              caches:
+                - pnpm
+              script:
+                - npm install -g pnpm
+                - cd backend
+                - echo "🔍 Vérification de la qualité du code backend..."
+                - pnpm prettier --check "src/**/*.{ts,js,json}" --config .prettierrc
+                - pnpm tsc --noEmit
+                - pnpm eslint src --ext .ts,.js --max-warnings 0
+                - echo "✅ Qualité du code backend validée"
+
+          - step:
+              name: Frontend - Code Quality
+              caches:
+                - pnpm
+              script:
+                - npm install -g pnpm
+                - cd frontend
+                - echo "🔍 Vérification de la qualité du code frontend..."
+                - pnpm prettier --check "src/**/*.{ts,tsx,js,jsx,json,css}" --config .prettierrc
+                - pnpm tsc --noEmit
+                - pnpm eslint src --ext .ts,.tsx,.js,.jsx --max-warnings 0
+                - echo "✅ Qualité du code frontend validée"

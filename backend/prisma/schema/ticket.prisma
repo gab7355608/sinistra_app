@@ -1,0 +1,30 @@
+model Ticket {
+  id                String        @id @default(uuid())
+  title             String
+  description       String        @db.Text
+  type              TicketType
+  status            TicketStatus  @default(OPEN)
+  specificData      Json?         @map("specific_data")
+  createdAt         DateTime      @default(now()) @map("created_at")
+  clientId          String        @map("client_id")
+  consultantId      String?       @map("consultant_id")
+
+  client            User          @relation("ClientTickets", fields: [clientId], references: [id])
+  consultant        User?         @relation("ConsultantTickets", fields: [consultantId], references: [id])
+  messages          Message[]
+
+  @@map("tickets")
+}
+
+enum TicketType {
+  CAR_ACCIDENT
+  FIRE
+  THEFT_BURGLARY
+  WATER_DAMAGE
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+}

@@ -1,0 +1,32 @@
+model User {
+  id               String    @id @default(uuid())
+  email            String    @unique
+  password         String
+  firstName        String
+  lastName         String
+  phone            String?
+  address          String?
+  birthDate        DateTime?
+  roles            Json      @default("[\"ROLE_USER\"]")
+  tokens           Token[]
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  deletedAt        DateTime?
+  lastLoginAt      DateTime?
+  specialization  Specialization?
+
+  invitationRequests InvitationRequest[] @relation("InvitedUser")
+  invitations InvitationRequest[] @relation("InviterUser")
+  clientTickets    Ticket[]  @relation("ClientTickets")
+  consultantTickets Ticket[] @relation("ConsultantTickets")
+  messages         Message[]
+
+  @@map("users")
+}
+
+enum Specialization {
+  WATER_DAMAGE
+  FIRE
+  THEFT_BURGLARY 
+  CAR_ACCIDENT
+}

@@ -1,0 +1,12 @@
+export enum TicketStatus {
+  OPEN = 'OPEN',
+  IN_PROGRESS = 'IN_PROGRESS',
+  RESOLVED = 'RESOLVED',
+}
+
+export enum TicketType {
+  CAR_ACCIDENT = 'CAR_ACCIDENT',
+  FIRE = 'FIRE',
+  THEFT_BURGLARY = 'THEFT_BURGLARY',
+  WATER_DAMAGE = 'WATER_DAMAGE',
+}
