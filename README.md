@@ -2,7 +2,7 @@
 
 ## Description
 
-Sinistra est une plateforme moderne de gestion de sinistres qui permet aux utilisateurs de déclarer et suivre leurs sinistres (automobile, incendie, dégâts des eaux, vol/cambriolage) via un chatbot intelligent alimenté par Claude AI.
+Sinistra est une plateforme moderne de gestion de sinistres qui permet aux utilisateurs de déclarer et suivre leurs sinistres (automobile, incendie, dégâts des eaux, vol/cambriolage) via un chatbot intelligent alimenté par Claude AI. Elle permet également l'analyse des dégâts subis par un véhicule grâce à la technologie Custom Vision d'Azure AI.
 
 ## Prérequis
 
@@ -128,3 +128,4 @@ pnpm prisma:studio      # Interface graphique
 - Interface utilisateur moderne
 - Système de rôles et permissions
 - API REST documentée
+
