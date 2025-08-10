@@ -69,17 +69,17 @@ class AzurService {
     // Configuration basée uniquement sur les variables d'environnement
     const config = {
       customVisionEndpoint: process.env.AZURE_CUSTOM_VISION_ENDPOINT || 
-        'https://cddgab7355608-prediction.cognitiveservices.azure.com/',
+        '',
       predictionKey: process.env.AZURE_PREDICTION_KEY || 
-        'D3YKTph3jH8QCkyB84fT2yrsKWxahJHntMPq8ry1u3X6jkN0gVB6JQQJ99BGAC5RqLJXJ3w3AAAIACOGiv0N',
+        '',
       projectId: process.env.AZURE_PROJECT_ID || 
-        'bb1928ea-016c-4f5b-874b-b16600ae3ac5',
+        '',
       publishIterationName: process.env.AZURE_PUBLISH_ITERATION_NAME || 
-        'Iteration1',
+        '',
       cognitiveKey: process.env.AZURE_COGNITIVE_KEY || 
-        'd576d56a557b42d9b798496906c54c1e',
+        '',
       cognitiveEndpoint: process.env.AZURE_COGNITIVE_ENDPOINT || 
-        'https://westus2.api.cognitive.microsoft.com/'
+        ''
     };
 
     // Validation des configurations critiques
